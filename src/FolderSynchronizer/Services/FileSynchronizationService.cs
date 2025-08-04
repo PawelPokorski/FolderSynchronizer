@@ -12,8 +12,6 @@ public class FileSynchronizationService(IOptions<WorkerOptions> options, ILogWri
     /// <summary>
     /// Synchronizes files from the source directory to the replica directory.
     /// </summary>
-    /// <param name="sourcePath"></param>
-    /// <param name="replicaPath"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task SynchronizeFilesAsync(CancellationToken cancellationToken)
