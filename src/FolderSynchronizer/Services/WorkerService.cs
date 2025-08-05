@@ -7,26 +7,21 @@ namespace FolderSynchronizer.Services;
 
 public class WorkerService(IOptions<WorkerOptions> options, IFileSynchronizationService fileSynchronization, ILogWriter logWriter) : BackgroundService
 {
-    // Injecting WorkerOptions to get configuration values from appsettings.json
     private readonly int _syncInterval = options.Value.SyncInterval;
-    private readonly string _logDirectory = logWriter.GetLogDirectory();
     private readonly string _copyFromPath = options.Value.CopyFromPath;
     private readonly string _copyToPath = options.Value.CopyToPath;
 
+    /// <summary>
+    /// A background service that periodically checks for directories and synchronizes files.
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            // Ensure the log directory exists
-            if (!Directory.Exists(_logDirectory))
-            {
-                Directory.CreateDirectory(_logDirectory);
-                await logWriter.LogAsync($"Created log directory '{_logDirectory}' with file {logWriter.GetLogFileName()}");
-            }
-
             CheckForDirectories();
             await fileSynchronization.SynchronizeFilesAsync(cancellationToken);
-
             await Task.Delay(_syncInterval, cancellationToken);
         }
 
@@ -34,7 +29,7 @@ public class WorkerService(IOptions<WorkerOptions> options, IFileSynchronization
     }
 
     /// <summary>
-    /// Checks if the source and replica directories exist, creates them if they do not, and logs the actions.
+    /// Checks if the source and replica directories exist and perform the appropriate action.
     /// </summary>
     public void CheckForDirectories()
     {
@@ -52,6 +47,9 @@ public class WorkerService(IOptions<WorkerOptions> options, IFileSynchronization
         }
     }
 
+    /// <summary>
+    /// A dedicated method to facilitate application testing
+    /// </summary>
     protected virtual void TerminateApplication(int exitCode)
     {
         logWriter.LogAsync($"Application terminated with exit code {exitCode}");

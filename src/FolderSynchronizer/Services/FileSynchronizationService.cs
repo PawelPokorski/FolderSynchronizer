@@ -43,29 +43,29 @@ public class FileSynchronizationService(IOptions<WorkerOptions> options, ILogWri
             cancellationToken.ThrowIfCancellationRequested();
 
             // Relative path of the source file without the filename
-            var relativeSourcePath = Path.GetRelativePath(_copyFromPath, Path.GetDirectoryName(sourceFile) ?? string.Empty);
+            var sourceRelativePath = Path.GetRelativePath(_copyFromPath, Path.GetDirectoryName(sourceFile) ?? string.Empty);
             // Full replica file without the filename
-            var replicaDirectory = Path.Combine(_copyToPath, relativeSourcePath);
+            var replicaPath = Path.Combine(_copyToPath, sourceRelativePath);
             // Full replica file path including the filename
-            var replicaFile = Path.Combine(replicaDirectory, Path.GetFileName(sourceFile));
+            var replicaFile = Path.Combine(replicaPath, Path.GetFileName(sourceFile));
 
             // Ensure the replica directory exists or create it
-            if (!Directory.Exists(replicaDirectory))
+            if (!Directory.Exists(replicaPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(replicaDirectory);
-                    await logWriter.LogAsync($"Created directory {replicaDirectory}");
+                    Directory.CreateDirectory(replicaPath);
+                    await logWriter.LogAsync($"Created directory {replicaPath}");
                 }
                 catch (Exception ex)
                 {
                     // Log any errors that occur during directory creation
-                    await logWriter.LogAsync($"Error creating directory {replicaDirectory}: {ex.Message}");
+                    await logWriter.LogAsync($"Error creating directory {replicaPath}: {ex.Message}");
                     continue; // Skip to the next file if there's an error
                 }
             }
 
-            if (!await CheckIfCopyFileNeeded(replicaDirectory, sourceFile, cancellationToken)) continue;
+            if (!await CheckIfCopyFileNeeded(replicaPath, sourceFile, cancellationToken)) continue;
 
             using FileStream fs = File.Open(sourceFile, FileMode.Open, FileAccess.Read);
             using FileStream ds = File.Create(replicaFile);
@@ -74,7 +74,6 @@ public class FileSynchronizationService(IOptions<WorkerOptions> options, ILogWri
             {
                 // Copy the file from source to replica
                 await fs.CopyToAsync(ds, cancellationToken);
-                // Log the successful copy operation
                 await logWriter.LogAsync($"Copied file {sourceFile} to {_copyToPath}");
             }
             catch (Exception ex)

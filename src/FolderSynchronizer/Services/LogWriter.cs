@@ -8,14 +8,18 @@ public class LogWriter(IOptions<WorkerOptions> options) : ILogWriter
 {
     private readonly string _logFilePath = options.Value.LogFileFullPath;
 
+    /// <summary>
+    /// Asynchronously logs a message to the log file.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
     public async Task LogAsync(string message)
     {
-        var directory = Path.GetDirectoryName(_logFilePath);
-
         // Ensure the log directory exists
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        if (Directory.Exists(GetLogDirectory()))
         {
-            Directory.CreateDirectory(directory);
+            Directory.CreateDirectory(GetLogDirectory());
+            await LogAsync($"Created log directory '{GetLogDirectory()}' with file {GetLogFileName()}");
         }
 
         await using var logWriter = new StreamWriter(_logFilePath, true);
