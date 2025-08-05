@@ -16,7 +16,7 @@ public class LogWriter(IOptions<WorkerOptions> options) : ILogWriter
     public async Task LogAsync(string message)
     {
         // Ensure the log directory exists
-        if (Directory.Exists(GetLogDirectory()))
+        if (!Directory.Exists(GetLogDirectory()))
         {
             Directory.CreateDirectory(GetLogDirectory());
             await LogAsync($"Created log directory '{GetLogDirectory()}' with file {GetLogFileName()}");

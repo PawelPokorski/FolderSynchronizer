@@ -4,13 +4,7 @@ using FolderSynchronizer.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace FolderSynchronizer;
-
-public class Program
-{
-    static void Main(string[] args)
-    {
-        var builder = Host.CreateDefaultBuilder(args)
+var builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         if (args.Length > 0)
@@ -38,8 +32,6 @@ public class Program
         services.AddHostedService<WorkerService>();
     });
 
-        var app = builder.Build();
+var app = builder.Build();
 
-        app.Run();
-    }
-}
+app.Run();
