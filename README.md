@@ -7,7 +7,7 @@ This is a C# program that performs a one-way synchronization between two folders
 ### Key Features
 * **One-Way Synchronization**: The replica folder is modified to match the source folder. Any changes in the source are applied to the replica.
 * **Scheduled Execution**: The synchronization process runs at a regular, user-defined interval.
-* **Logging**: All file and folder operations (creation, copying, deletion) are logged to both the console and a specified log file.
+* **Logging**: All file and folder operations (creation, copying, deletion) are logged to a specified log file.
 * **Command-Line Configuration**: All necessary parameters: _source path_, _replica path_, _sync interval_, and _log file path_ are provided via command-line arguments.
 
 ## Technology
