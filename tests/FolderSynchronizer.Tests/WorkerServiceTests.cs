@@ -10,6 +10,8 @@ namespace FolderSynchronizer.Tests;
 
 /// <summary>
 /// Simple unit tests for the WorkerService class
+/// Mocks configured with the help of the article
+/// https://www.codemag.com/Article/2305041/Using-Moq-A-Simple-Guide-to-Mocking-for-.NET
 /// </summary>
 public class WorkerServiceTests
 {
